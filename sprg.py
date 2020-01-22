@@ -1,9 +1,19 @@
 import speech_recognition as sr
+from datetime import datetime
+import time
+
+
+filename = datetime.now().strftime('%Y%m%d_%H:%M:%S')
+txt =filename +".txt"
+
+with open(txt, 'w') as f: #txtファイルの新規作成
+    f.write(filename + "\n") #最初の一行目にはfilenameを記載する
 
 r = sr.Recognizer()
 mic = sr.Microphone()
 
-while True:
+t_end = time.time() + 10 #10秒間
+while time.time() < t_end:
     print("Say something ...")
 
     with mic as source:
@@ -13,12 +23,10 @@ while True:
     print ("Now to recognize it...")
 
     try:
-        print(r.recognize_google(audio, language='ja-JP'))
+        print(r.recognize_google(audio, language='en-US'))
 
-        # "ストップ" と言ったら音声認識を止める
-        if r.recognize_google(audio, language='ja-JP') == "ストップ" :
-            print("end")
-            break
+        with open(txt,'a') as f: #ファイルの末尾に追記していく
+            f.write("\n" + r.recognize_google(audio, language='en-US'))
 
     # 以下は認識できなかったときに止まらないように。
     except sr.UnknownValueError:
